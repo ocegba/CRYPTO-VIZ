@@ -10,7 +10,7 @@ def delivery_report(err, msg):
 
 # Configuration du producteur
 conf = {
-    'bootstrap.servers': 'host.docker.internal:9092',
+    'bootstrap.servers': 'localhost:9092',
     'client.id': 'python-producer'
 }
 
