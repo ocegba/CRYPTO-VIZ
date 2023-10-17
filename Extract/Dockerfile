@@ -14,4 +14,4 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY . .
 
 # Commande à exécuter lors du démarrage du conteneur
-CMD ["python", "./producer.py"]
+CMD ["python", "./connectdb.py"]
