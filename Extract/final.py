@@ -7,26 +7,26 @@ import time
 
 crypto = {
     'Bitcoin': 'BTCUSDT',
-    # 'Ethereum': 'ETHUSDT',
-    # 'Binance Coin': 'BNBUSDT',
-    # 'Cardano': 'ADAUSDT',
-    # 'Solana': 'SOLUSDT',
-    # 'XRP': 'XRPUSDT',
-    # 'Polkadot': 'DOTUSDT',
-    # 'Dogecoin': 'DOGEUSDT',
-    # 'Avalanche': 'AVAXUSDT',
-    # 'Chainlink': 'LINKUSDT',
-    # 'Litecoin': 'LTCUSDT',
-    # 'Bitcoin Cash': 'BCHUSDT',
-    # 'Cosmos': 'ATOMUSDT',
-    # 'VeChain': 'VETUSDT',
-    # 'Filecoin': 'FILUSDT',
-    # 'Ethereum Classic': 'ETCUSDT',
-    # 'Tron': 'TRXUSDT',
-    # 'Stellar': 'XLMUSDT',
-    # 'Tezos': 'XTZUSDT',
-    # 'IOTA': 'IOTAUSDT',
-    # 'Neo': 'NEOUSDT'
+    'Ethereum': 'ETHUSDT',
+    'Binance Coin': 'BNBUSDT',
+    'Cardano': 'ADAUSDT',
+    'Solana': 'SOLUSDT',
+    'XRP': 'XRPUSDT',
+    'Polkadot': 'DOTUSDT',
+    'Dogecoin': 'DOGEUSDT',
+    'Avalanche': 'AVAXUSDT',
+    'Chainlink': 'LINKUSDT',
+    'Litecoin': 'LTCUSDT',
+    'Bitcoin Cash': 'BCHUSDT',
+    'Cosmos': 'ATOMUSDT',
+    'VeChain': 'VETUSDT',
+    'Filecoin': 'FILUSDT',
+    'Ethereum Classic': 'ETCUSDT',
+    'Tron': 'TRXUSDT',
+    'Stellar': 'XLMUSDT',
+    'Tezos': 'XTZUSDT',
+    'IOTA': 'IOTAUSDT',
+    'Neo': 'NEOUSDT'
     # Add more cryptocurrencies as needed
 }
 
@@ -57,7 +57,7 @@ def main(crypto):
         
         for future in futures:
             future.result()
-    time.sleep(5)  # Sleep for 5 seconds
+    time.sleep(60)  # Sleep for 5 seconds
 
 if __name__ == "__main__":
     try:
