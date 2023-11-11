@@ -1,19 +1,17 @@
 version: "3.7"
 
 services:
-  influxdb:
-    image: influxdb:latest
-    ports:
-      - "8086:8086"
+  prometheus:
+    image: prom/prometheus
     volumes:
-      - influxdb-storage:/var/lib/influxdb
-    environment:
-      - INFLUXDB_DB=db0
-      - INFLUXDB_ADMIN_USER=admin
-      - INFLUXDB_ADMIN_PASSWORD=cygxe6-Myhmub-godjub
-      - INFLUXDB_URL=http://localhost:8086
-    networks:
-      - influxnetwork
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus_data:/prometheus
+    ports:
+      - "9090:9090"
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
+      - "--storage.tsdb.path=/prometheus"
+      - "--web.enable-lifecycle"
 
   grafana:
     image: grafana/grafana:latest
@@ -84,8 +82,6 @@ services:
       /etc/confluent/docker/run
 
 volumes:
-  influxdb-storage:
+  prometheus_data:
+    name: prometheus_data
   grafana-storage:
-
-networks:
-  influxnetwork:
