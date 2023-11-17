@@ -32,16 +32,7 @@ services:
       dockerfile: Dockerfile
     volumes:
       - ./extract:/app
-    networks:
-      - influxnetwork
-    environment:
-      - INFLUXDB_DB=db0
-      - INFLUXDB_ADMIN_USER=admin
-      - INFLUXDB_ADMIN_PASSWORD=cygxe6-Myhmub-godjub
-      - INFLUXDB_URL=http://localhost:8086
-      - INFLUXDB_TOKEN=C1szqH2SzsFz0gkev0wdU0vBaWCZoYxeA_AWkFPSMRrAoLITtiQOY_Cv95KDcFLwa7Uvv-83DehV2s6TjhRFjQ==
     depends_on:
-      - influxdb
       - grafana
 
 volumes:
