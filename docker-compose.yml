@@ -1,10 +1,10 @@
-version: '3.7'
+version: "3.7"
 
 services:
   influxdb:
     image: influxdb:latest
     ports:
-      - '8086:8086'
+      - "8086:8086"
     volumes:
       - influxdb-storage:/var/lib/influxdb
     environment:
@@ -18,7 +18,7 @@ services:
   grafana:
     image: grafana/grafana:latest
     ports:
-      - '3000:3000'
+      - "3000:3000"
     volumes:
       - grafana-storage:/var/lib/grafana
       - ./grafana-provisioning/:/etc/grafana/provisioning
@@ -47,29 +47,41 @@ services:
       - grafana
 
   zookeeper:
-    image: 'bitnami/zookeeper:latest'
+    image: "bitnami/zookeeper:latest"
     container_name: zookeeper
     networks:
       - influxnetwork
     ports:
-      - '2181:2181'
+      - "2181:2181"
     environment:
       - ALLOW_ANONYMOUS_LOGIN=yes
 
   kafka:
-    image: 'bitnami/kafka:latest'
+    image: "bitnami/kafka:latest"
     container_name: kafka
     networks:
       - influxnetwork
     ports:
-      - '9092:9092'
+      - "9092:9092"
     environment:
       - KAFKA_BROKER_ID=1
-      - 'KAFKA_LISTENERS=PLAINTEXT://:9092'
-      - 'KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181'
+      - "KAFKA_LISTENERS=PLAINTEXT://:9092"
+      - "KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181"
       - ALLOW_PLAINTEXT_LISTENER=yes
     depends_on:
       - zookeeper
+
+  kafka-connect:
+  image: confluentinc/cp-kafka-connect:7.1.0-1-ubi8
+  environment:
+    CONNECT_PLUGIN_PATH: /usr/share/java,/usr/share/confluent-hub-components
+
+  command:
+    - bash
+    - -c
+    - |
+      confluent-hub install --no-prompt neo4j/kafka-connect-neo4j:2.0.2
+      /etc/confluent/docker/run
 
 volumes:
   influxdb-storage:
