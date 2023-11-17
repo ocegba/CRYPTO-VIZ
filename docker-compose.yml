@@ -20,8 +20,7 @@ services:
     volumes:
       - grafana-storage:/var/lib/grafana
       - ./grafana-provisioning/:/etc/grafana/provisioning
-    depends_on:
-      - influxdb
+
     environment:
       - GF_SECURITY_ADMIN_USER=${GRAFANA_USERNAME}
       - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_PASSWORD}
@@ -41,7 +40,6 @@ services:
       - INFLUXDB_URL=http://localhost:8086
       - INFLUXDB_TOKEN=C1szqH2SzsFz0gkev0wdU0vBaWCZoYxeA_AWkFPSMRrAoLITtiQOY_Cv95KDcFLwa7Uvv-83DehV2s6TjhRFjQ==
     depends_on:
-      - influxdb
       - grafana
 
   zookeeper:
@@ -68,6 +66,17 @@ services:
       - ALLOW_PLAINTEXT_LISTENER=yes
     depends_on:
       - zookeeper
+
+  nifi:
+    image: apache/nifi:latest
+    container_name: nifi
+    ports:
+      - "8081:8443"
+    volumes:
+      - ./nifi:/opt/nifi/nifi-current/data
+
+networks:
+  influxnetwork:
 
 volumes:
   prometheus_data:
