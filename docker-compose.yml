@@ -75,6 +75,9 @@ services:
     volumes:
       - ./nifi:/opt/nifi/nifi-current/data
       - ./nifi/logs:/opt/nifi/logs
+    environment:
+      - SINGLE_USER_CREDENTIALS_USERNAME=admin
+      - SINGLE_USER_CREDENTIALS_PASSWORD=ctsBtRBKHRAx69EqUghvvgEvjnaLjFEB
 
 networks:
   influxnetwork:
