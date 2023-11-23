@@ -44,11 +44,11 @@ services:
 
   data_from_binance:
     build:
-      dockerfile: Dockerfile
+        dockerfile: Dockerfile
     volumes:
-      - ./nifi/data:/app
+        - ./nifi/data:/app/nifi/data  # Montez le dossier ./nifi/data dans /app/nifi/data à l'intérieur du conteneur
     networks:
-      - influxnetwork
+        - influxnetwork
 
   zookeeper:
     image: "bitnami/zookeeper:latest"
