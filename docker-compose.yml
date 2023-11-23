@@ -71,9 +71,11 @@ services:
     image: apache/nifi:latest
     container_name: nifi
     ports:
-      - "8081:8443"
+      - "8443:8443"
     volumes:
       - ./nifi:/opt/nifi/nifi-current/data
+      - ./nifi/logs:/opt/nifi/logs
+
 
 networks:
   influxnetwork:
