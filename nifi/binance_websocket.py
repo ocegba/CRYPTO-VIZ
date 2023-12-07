@@ -13,13 +13,18 @@ async def on_error(error):
 async def on_close(close_msg):
     print("### closed ###" + close_msg)
 
-async def streamKline(currency, interval):
+async def streamKline(currency, interval, nifi_host, nifi_port):
     uri = f'wss://stream.binance.com:9443/ws/{currency}@kline_{interval}'
     async with websockets.connect(uri) as ws:
         while True:
             try:
                 message = await ws.recv()
                 await on_message(message)
+
+                async with websockets.connect(f"ws://{nifi_host}:{nifi_port}/binance") as ws_nifi: #ListenWebSocket 
+                    await ws_nifi.send(message)
+                    print("Sent to NiFi")
+
             except websockets.exceptions.ConnectionClosedError as e:
                 await on_close(str(e))
                 break
@@ -36,8 +41,10 @@ async def produce(message: str, host:str, port:int):
 async def main():
     currency = 'btcusdt'
     interval = '1m'
+    nifi_host = "nifi"
+    nifi_port = 6890
 
-    await streamKline(currency, interval)
+    await streamKline(currency, interval, nifi_host, nifi_port)
 
 if __name__ == "__main__":
     asyncio.run(main())
