@@ -8,4 +8,4 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY ./nifi /app
 
-CMD ["python", "/app/binance.py"]
+CMD ["python", "/app/binance_websocket.py"]

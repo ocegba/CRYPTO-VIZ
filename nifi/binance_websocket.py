@@ -1,25 +1,43 @@
-import websocket
+import asyncio
+import websockets
 import datetime
 
-def on_message(ws, message):
+async def on_message(message):
     print()
     print(str(datetime.datetime.now()) + ": ")
     print(message)
 
-def on_error(ws, error):
+async def on_error(error):
     print(error)
 
-def on_close(close_msg):
+async def on_close(close_msg):
     print("### closed ###" + close_msg)
 
-def streamKline(currency, interval):
-    websocket.enableTrace(False)
-    socket = f'wss://stream.binance.com:9443/ws/{currency}@kline_{interval}'
-    ws = websocket.WebSocketApp(socket,
-                                on_message=on_message,
-                                on_error=on_error,
-                                on_close=on_close)
+async def streamKline(currency, interval, nifi_host, nifi_port):
+    uri = f'wss://stream.binance.com:9443/ws/{currency}@kline_{interval}'
+    async with websockets.connect(uri) as ws:
+        while True:
+            try:
+                message = await ws.recv()
+                await on_message(message)
+            except websockets.exceptions.ConnectionClosedError as e:
+                await on_close(str(e))
+                break
+            except Exception as e:
+                await on_error(str(e))
 
-    ws.run_forever()
+async def produce(message: str, host:str, port:int):
+    async with websockets.connect(f"ws://{host}:{port}/binance") as ws:
+        print(message)
+        await ws.send(message)
+        print("=============================================")
+        await ws.recv()
 
-streamKline('solusdt', '1m')
+async def main():
+    currency = 'btcusdt'
+    interval = '1m'
+
+    await streamKline(currency, interval)
+
+if __name__ == "__main__":
+    asyncio.run(main())

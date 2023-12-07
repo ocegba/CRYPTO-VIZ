@@ -5,5 +5,5 @@ requests
 urllib3
 confluent-kafka
 influxdb_client
-unicorn_binance_websocket_api
-websockets==8.1
+# unicorn_binance_websocket_api
+websockets
