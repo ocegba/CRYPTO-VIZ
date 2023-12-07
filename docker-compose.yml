@@ -46,6 +46,7 @@ services:
     build:
         dockerfile: Dockerfile
     volumes:
+
         - ./nifi/data:/app/nifi/data  # Montez le dossier ./nifi/data dans /app/nifi/data à l'intérieur du conteneur
     networks:
         - influxnetwork
