@@ -13,7 +13,7 @@ async def on_error(error):
 async def on_close(close_msg):
     print("### closed ###" + close_msg)
 
-async def streamKline(currency, interval, nifi_host, nifi_port):
+async def streamKline(currency, interval):
     uri = f'wss://stream.binance.com:9443/ws/{currency}@kline_{interval}'
     async with websockets.connect(uri) as ws:
         while True:
