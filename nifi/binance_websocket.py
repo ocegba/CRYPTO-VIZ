@@ -23,7 +23,7 @@ async def streamKline(currency, interval, nifi_host, nifi_port):
                 message = await ws_nifi.recv()
                 await on_message(message)
                 print("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++", nifi_host, nifi_port)
-                async with websockets.connect(f"ws://{nifi_host}:{nifi_port}/binance") as ws_nifi: #ListenWebSocket 
+                async with websockets.connect(f"wss://{nifi_host}:{nifi_port}/binance") as ws_nifi: #ListenWebSocket 
                     print("--------------------------------------------------------------------------------------------------------------------------", nifi_host, nifi_port)
                     await ws_nifi.send("hello", message)
                     print("Sent to NiFi")
@@ -33,6 +33,7 @@ async def streamKline(currency, interval, nifi_host, nifi_port):
                 print('on close')
                 break
             except Exception as e:
+                print(nifi_host, "nifi_host")
                 await on_error(str(e))
                 print('on error')
 
