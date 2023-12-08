@@ -92,8 +92,8 @@ services:
     environment:
       - SINGLE_USER_CREDENTIALS_USERNAME=admin
       - SINGLE_USER_CREDENTIALS_PASSWORD=ctsBtRBKHRAx69EqUghvvgEvjnaLjFEB
-    networks:
-      - influxnetwork
+    # networks:
+    #   - influxnetwork
 
 networks:
   data_network:
