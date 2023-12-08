@@ -44,12 +44,13 @@ services:
 
   data_from_binance:
     build:
-        dockerfile: Dockerfile
+      dockerfile: Dockerfile
     volumes:
-
-        - ./nifi/data:/app/nifi/data  # Montez le dossier ./nifi/data dans /app/nifi/data à l'intérieur du conteneur
+      - ./nifi/data:/app/nifi/data # Montez le dossier ./nifi/data dans /app/nifi/data à l'intérieur du conteneur
     networks:
-        - influxnetwork
+      - influxnetwork
+    depends_on:
+      - nifi
 
   zookeeper:
     image: "bitnami/zookeeper:latest"
@@ -81,6 +82,7 @@ services:
     container_name: nifi
     ports:
       - "8443:8443"
+      - "6993:6993"
     volumes:
       - ./nifi:/opt/nifi/nifi-current/data
       - ./nifi/logs:/opt/nifi/logs
