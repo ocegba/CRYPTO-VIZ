@@ -48,11 +48,7 @@ class Worker:
                 try:
                     message = await ws_binance.recv()
                     await self.on_message(message)
-
-                    async with websockets.connect(f"ws://{nifi_host}:{nifi_port}/binance") as ws_nifi:
-                        await ws_nifi.send(message)
-                        print("Sent to NiFi")
-
+                    
                 except websockets.exceptions.ConnectionClosedError as e:
                     await self.on_close(str(e))
                     break

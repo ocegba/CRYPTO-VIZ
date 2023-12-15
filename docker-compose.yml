@@ -77,7 +77,6 @@ services:
       - data_network
     ports:
       - "8443:8443"
-      - "6993:6993"
     volumes:
       - ./nifi/templates:/opt/nifi/nifi-current/conf/templates
     environment:
@@ -98,6 +97,7 @@ services:
       - data_network
     depends_on:
       - kafka
+      - nifi
 
   consumer:
     build:
