@@ -37,7 +37,7 @@ class Worker:
 
     def run_worker(self):
        scheduler = BlockingScheduler()
-       scheduler.add_job(self.run_tasks, 'cron', minute='*/1')
+       scheduler.add_job(self.run_tasks, 'cron', minute='*/5')
        logging.info('initializing worker cron task')
        scheduler.start()
        logging.info('finish worker cron task, wait for the next execution!')

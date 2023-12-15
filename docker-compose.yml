@@ -1,29 +1,36 @@
 version: "3.7"
 
 services:
-  prometheus:
-    image: prom/prometheus
-    volumes:
-      - ./prometheus.yml:/etc/prometheus/prometheus.yml
-      - prometheus_data:/prometheus
-    ports:
-      - "9090:9090"
-    command:
-      - "--config.file=/etc/prometheus/prometheus.yml"
-      - "--storage.tsdb.path=/prometheus"
-      - "--web.enable-lifecycle"
+  # prometheus:
+  #   image: prom/prometheus
+  #   volumes:
+  #     - ./prometheus.yml:/etc/prometheus/prometheus.yml
+  #     - prometheus_data:/prometheus
+  #   ports:
+  #     - "9090:9090"
+  #   command:
+  #     - "--config.file=/etc/prometheus/prometheus.yml"
+  #     - "--storage.tsdb.path=/prometheus"
+  #     - "--web.enable-lifecycle"
 
   grafana:
-    image: grafana/grafana:latest
+    image:  grafana/grafana-enterprise:latest
+    container_name: grafana
+    restart: unless-stopped
     ports:
       - "3000:3000"
     volumes:
-      - grafana-storage:/var/lib/grafana
-      - ./grafana-provisioning/:/etc/grafana/provisioning
-
+      - ./grafana/grafana-storage:/var/lib/grafana
+      - ./grafana/grafana-provisioning/:/etc/grafana/provisioning
     environment:
       - GF_SECURITY_ADMIN_USER=${GRAFANA_USERNAME}
       - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_PASSWORD}
+      - GF_AUTH_ANONYMOUS_ENABLED=false
+      - GF_INSTALL_PLUGINS=hamedkarbasi93-kafka-datasource
+    depends_on:
+      - kafka
+    networks:
+      - data_network
 
   # extract-data:
   #   build:
@@ -80,8 +87,8 @@ services:
     volumes:
       - ./nifi/templates:/opt/nifi/nifi-current/conf/templates
     environment:
-      - SINGLE_USER_CREDENTIALS_USERNAME=admin
-      - SINGLE_USER_CREDENTIALS_PASSWORD=ctsBtRBKHRAx69EqUghvvgEvjnaLjFEB
+      - SINGLE_USER_CREDENTIALS_USERNAME=${NIFI_USERNAME}
+      - SINGLE_USER_CREDENTIALS_PASSWORD=${NIFI_PASSWORD}
       - NIFI_ZK_CONNECT_STRING="zookeeper:2181"
 
   producer:
@@ -97,7 +104,6 @@ services:
       - data_network
     depends_on:
       - kafka
-      - nifi
 
   consumer:
     build:
