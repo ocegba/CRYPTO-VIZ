@@ -32,7 +32,7 @@ services:
   #   volumes:
   #     - ./extract:/app
   #   networks:
-  #     - influxnetwork
+  #     - data_network
   #   environment:
   #     - INFLUXDB_DB=db0
   #     - INFLUXDB_ADMIN_USER=admin
@@ -42,20 +42,11 @@ services:
   #   depends_on:
   #     - grafana
 
-  data_from_binance:
-    build:
-        dockerfile: Dockerfile
-    volumes:
-
-        - ./nifi/data:/app/nifi/data  # Montez le dossier ./nifi/data dans /app/nifi/data à l'intérieur du conteneur
-    networks:
-        - influxnetwork
-
   zookeeper:
     image: "bitnami/zookeeper:latest"
     container_name: zookeeper
     networks:
-      - influxnetwork
+      - data_network
     ports:
       - "2181:2181"
     environment:
@@ -65,7 +56,7 @@ services:
     image: "bitnami/kafka:latest"
     container_name: kafka
     networks:
-      - influxnetwork
+      - data_network
     ports:
       - "9092:9092"
     environment:
@@ -73,23 +64,56 @@ services:
       - "KAFKA_LISTENERS=PLAINTEXT://:9092"
       - "KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181"
       - ALLOW_PLAINTEXT_LISTENER=yes
+      - KAFKA_CREATE_TOPICS="kafka-nifi-src:1:1,kafka-nifi-dst:1:1"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock  
     depends_on:
       - zookeeper
 
   nifi:
     image: apache/nifi:latest
     container_name: nifi
+    networks:
+      - data_network
     ports:
       - "8443:8443"
     volumes:
-      - ./nifi:/opt/nifi/nifi-current/data
-      - ./nifi/logs:/opt/nifi/logs
+      - ./nifi/templates:/opt/nifi/nifi-current/conf/templates
     environment:
       - SINGLE_USER_CREDENTIALS_USERNAME=admin
       - SINGLE_USER_CREDENTIALS_PASSWORD=ctsBtRBKHRAx69EqUghvvgEvjnaLjFEB
+      - NIFI_ZK_CONNECT_STRING="zookeeper:2181"
+
+  producer:
+    build:
+      context: ./kafka/producer
+      dockerfile: Dockerfile
+    container_name: kafka-producer
+    environment:
+      BINANCE_WEBSOCKETS: 'wss://stream.binance.com:9443/ws/btcusdt@kline_1m'
+      TOPIC: kafka-nifi-src
+      BOOTSTRAP_SERVER: "kafka:9092"
+    networks:
+      - data_network
+    depends_on:
+      - kafka
+      - nifi
+
+  consumer:
+    build:
+      context: ./kafka/consumer
+      dockerfile: Dockerfile
+    container_name: kafka-consumer
+    environment:
+      TOPIC: kafka-nifi-dst
+      BOOTSTRAP_SERVER: "kafka:9092"
+    networks:
+      - data_network
+    depends_on:
+      - kafka
 
 networks:
-  influxnetwork:
+  data_network:
 
 volumes:
   prometheus_data:
