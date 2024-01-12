@@ -1,17 +1,17 @@
 version: "3.7"
 
 services:
-  prometheus:
-    image: prom/prometheus
-    volumes:
-      - ./prometheus.yml:/etc/prometheus/prometheus.yml
-      - prometheus_data:/prometheus
-    ports:
-      - "9090:9090"
-    command:
-      - "--config.file=/etc/prometheus/prometheus.yml"
-      - "--storage.tsdb.path=/prometheus"
-      - "--web.enable-lifecycle"
+  # prometheus:
+  #   image: prom/prometheus
+  #   volumes:
+  #     - ./prometheus.yml:/etc/prometheus/prometheus.yml
+  #     - prometheus_data:/prometheus
+  #   ports:
+  #     - "9090:9090"
+  #   command:
+  #     - "--config.file=/etc/prometheus/prometheus.yml"
+  #     - "--storage.tsdb.path=/prometheus"
+  #     - "--web.enable-lifecycle"
 
   # extract-data:
   #   build:
@@ -72,7 +72,7 @@ services:
       - SINGLE_USER_CREDENTIALS_PASSWORD=ctsBtRBKHRAx69EqUghvvgEvjnaLjFEB
       - NIFI_ZK_CONNECT_STRING="zookeeper:2181"
 
-  producer:
+  kafka-producer:
     build:
       context: ./kafka/producer
       dockerfile: Dockerfile
@@ -87,7 +87,7 @@ services:
       - kafka
       - nifi
 
-  consumer:
+  kafka-consumer:
     build:
       context: ./kafka/consumer
       dockerfile: Dockerfile
@@ -100,10 +100,54 @@ services:
     depends_on:
       - kafka
 
+  metricbeat:
+    build:
+      context: ./elasticsearch-data/metricbeat
+      dockerfile: Dockerfile
+    volumes:
+      - ./elasticsearch-data/metricbeat/metricbeat.yml:/usr/share/metricbeat/metricbeat.yml
+    depends_on:
+      - elasticsearch
+      - kafka
+      - kafka-producer
+    networks:
+      - data_network
+      
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.5.0
+    container_name: elasticsearch
+    environment:
+      - xpack.security.enabled=false
+      - discovery.type=single-node
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+      nofile:
+        soft: 65536
+        hard: 65536
+    cap_add:
+      - IPC_LOCK
+    volumes:
+      - elasticsearch-data:/usr/share/elasticsearch/data
+    ports:
+      - 9200:9200
+      - 9300:9300
+    depends_on:
+      - kafka
+
+  kibana:
+    container_name: kibana
+    image: docker.elastic.co/kibana/kibana:7.5.0
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+    ports:
+      - 5601:5601
+    depends_on:
+      - elasticsearch
+
 networks:
   data_network:
 
 volumes:
-  prometheus_data:
-    name: prometheus_data
-  grafana-storage:
+  elasticsearch-data:

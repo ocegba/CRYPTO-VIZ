@@ -1,0 +1,16 @@
+output.elasticsearch:
+  hosts: ["http://localhost:9200/"]
+  username: "elastic"
+  password: ""
+
+setup.kibana:
+  host: "http://localhost:5601/"
+
+metricbeat.modules:
+  - module: kafka
+    metricsets: ["consumergroup", "partition"]
+    enabled: true
+    hosts: ["localhost:9092"]
+    period: 10s
+
+# Add any additional configurations as needed
