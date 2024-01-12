@@ -100,19 +100,17 @@ services:
     depends_on:
       - kafka
 
-  metricbeat:
-    build:
-      context: ./elasticsearch-data/metricbeat
-      dockerfile: Dockerfile
-    volumes:
-      - ./elasticsearch-data/metricbeat/metricbeat.yml:/usr/share/metricbeat/metricbeat.yml
+  filebeat:
+    container_name: filebeat
+    image: docker.elastic.co/beats/filebeat:7.5.0
+    command: filebeat -strict.perms=false
     depends_on:
       - elasticsearch
       - kafka
       - kafka-producer
     networks:
       - data_network
-      
+    
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:7.5.0
     container_name: elasticsearch
@@ -135,6 +133,8 @@ services:
       - 9300:9300
     depends_on:
       - kafka
+    networks:
+      - data_network
 
   kibana:
     container_name: kibana
@@ -145,6 +145,8 @@ services:
       - 5601:5601
     depends_on:
       - elasticsearch
+    networks:
+      - data_network
 
 networks:
   data_network:
