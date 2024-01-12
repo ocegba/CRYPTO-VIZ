@@ -87,7 +87,7 @@ services:
       - data_network
     depends_on:
       - kafka
-      - producer
+      - kafka-producer
       - spark-master
       - spark-worker
 
