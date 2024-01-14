@@ -24,6 +24,8 @@ services:
     image: bitnami/spark:latest
     networks:
       - data_network
+    ports:
+      - "8081:8081"
     environment:
       - SPARK_MODE=worker
       - SPARK_MASTER_URL=spark://spark-master:7077
@@ -85,6 +87,8 @@ services:
       BOOTSTRAP_SERVER: "kafka:9092"
     networks:
       - data_network
+    volumes:
+      - ./kafka/consumer/app:/app
     depends_on:
       - kafka
       - kafka-producer

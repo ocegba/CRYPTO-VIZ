@@ -31,11 +31,15 @@ class Worker:
           consumer = self.config_consumer()
           logging.info("try")
           for data in consumer:
-            logging.info("tototototo")
-            logging.info("json: ", json.loads(data.value))
-            # Traiter les données avec Spark
-            df = self.spark.createDataFrame([data.value])
-            logging.info("df: ", df.show())
+            logging.info("tototototO")
+            # Décoder les données de bytes à str
+            json_data = data.value.decode('utf-8')
+            logging.info(json_data)
+            # Convertir JSON en dictionnaire Python
+            dict_data = json.loads(json_data)
+            # Créer un DataFrame Spark à partir du dictionnaire
+            df = self.spark.createDataFrame([dict_data])
+            logging.info('dataframe head - {}'.format(df))
        except KafkaError as err:
              logging.info("error")
              logging.info(err)
@@ -44,11 +48,12 @@ class Worker:
              logging.info(err)
 
     def run_worker(self):
-       scheduler = BlockingScheduler()
-       scheduler.add_job(self.run_tasks, 'cron', minute='*/3')
-       logging.info('initializing worker cron task')
-       scheduler.start()
-       logging.info('finish worker cron task, wait for the next execution!')
+      #  scheduler = BlockingScheduler()
+      #  scheduler.add_job(self.run_tasks, 'cron', minute='*/3')
+       self.run_tasks()
+      #  logging.info('initializing worker cron task')
+      #  scheduler.start()
+      #  logging.info('finish worker cron task, wait for the next execution!')
 
 if __name__ == '__main__':
    worker = Worker()
