@@ -39,8 +39,6 @@ class Worker:
     def send_producer_data(self, producer, data):
         for record in data :
             try:
-                logging.info("test send")
-                logging.info("nik zebi: ", record)
                 future = producer.send(self.producer_topic, record)  # Envoyer chaque enregistrement comme message
                 result = future.get(timeout=60)  # Attendre jusqu'à 60 secondes pour une réponse
                 logging.info(f"Successfully sent message to {result.topic}:{result.partition}")
@@ -52,9 +50,7 @@ class Worker:
     def run_tasks(self):
        try:
           consumer = self.config_consumer()
-          logging.info("pipi")
           producer = self.config_producer()
-          logging.info("caca")
           for data in consumer:
             json_data = data.value.decode('utf-8')
             processor = BinanceDataProcessor()
