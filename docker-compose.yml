@@ -98,17 +98,19 @@ services:
 
   filebeat:
     container_name: filebeat
-    image: docker.elastic.co/beats/filebeat:7.5.0
-    command: filebeat -strict.perms=false
+    image: docker.elastic.co/beats/filebeat:8.12.0
+    # command: filebeat -strict.perms=false
     depends_on:
       - elasticsearch
       - kafka
       - kafka-producer
     networks:
       - data_network
+    volumes:
+      - ./elasticsearch-data/filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml
 
   elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch:7.5.0
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.12.0
     container_name: elasticsearch
     environment:
       - xpack.security.enabled=false
@@ -134,7 +136,7 @@ services:
 
   kibana:
     container_name: kibana
-    image: docker.elastic.co/kibana/kibana:7.5.0
+    image: docker.elastic.co/kibana/kibana:8.12.0
     environment:
       - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
     ports:
