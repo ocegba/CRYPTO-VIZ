@@ -1,5 +1,5 @@
 from apscheduler.schedulers.blocking import BlockingScheduler
-from kafka import KafkaConsumer
+from kafka import KafkaConsumer, KafkaProducer
 from kafka.errors import KafkaError
 import logging
 from config import Config
@@ -15,6 +15,7 @@ class Worker:
 
     def __init__(self):
        self.bootstrap_server = Config.bootstrap_server
+       self.producer_topic = Config.producer_topic
        self.topic = Config.topic
        self.spark = SparkSession.builder.master("spark://spark-master:7077").appName("KafkaToSpark").getOrCreate()
 
@@ -27,37 +28,50 @@ class Worker:
                                  )
        return consumer
 
+    def config_producer(self):
+        producer = KafkaProducer(
+            bootstrap_servers=self.bootstrap_server,
+            value_serializer=lambda m: json.dumps(m).encode('utf-8'),
+            retries=3
+        )
+        return producer
+
+    def send_producer_data(self, producer, data):
+        for record in data :
+            try:
+                logging.info("test send")
+                logging.info("nik zebi: ", record)
+                future = producer.send(self.producer_topic, record)  # Envoyer chaque enregistrement comme message
+                result = future.get(timeout=60)  # Attendre jusqu'à 60 secondes pour une réponse
+                logging.info(f"Successfully sent message to {result.topic}:{result.partition}")
+            except KafkaError as e:
+                logging.error(f"Failed to send message: {e}")
+            except Exception as e :
+                logging.error(f"other error: {e}")
+
     def run_tasks(self):
        try:
           consumer = self.config_consumer()
-          #logging.info("try")
+          logging.info("pipi")
+          producer = self.config_producer()
+          logging.info("caca")
           for data in consumer:
-            #logging.info("tototototO")
-            # Décoder les données de bytes à str
             json_data = data.value.decode('utf-8')
-            #logging.info(json_data)
-            # Convertir JSON en dictionnaire Python
             processor = BinanceDataProcessor()
             parsed_df = processor.process_json_data(json_data, 18800000)
-            #parsed_df.printSchema()
             parsed_df.show()
             data = parsed_df.collect()
-            #logging.info(data)
-            #logging.info('dataframe head - {}'.format(parsed_df))
+            self.send_producer_data(producer, data)
+
        except KafkaError as err:
              logging.info("error")
-             logging.info(err)
+             logging.error(err)
        except Exception as err:
              logging.info("error")
              logging.info(err)
 
     def run_worker(self):
-      #  scheduler = BlockingScheduler()
-      #  scheduler.add_job(self.run_tasks, 'cron', minute='*/3')
        self.run_tasks()
-      #  logging.info('initializing worker cron task')
-      #  scheduler.start()
-      #  logging.info('finish worker cron task, wait for the next execution!')
 
 class BinanceDataProcessor:
     def __init__(self):
