@@ -122,13 +122,13 @@ services:
       # Elasticsearch Sink Connector specific settings
       CONNECTOR_NAME: "elasticsearch-sink"
       ES_HOST: "elasticsearch:9200"
-      CONNECT_LOG4J_LOGGERS: "org.apache.kafka.connect.runtime.rest=WARN,org.reflections=ERROR"  # Log levels
-      CONNECT_CONSUMER_INTERCEPTOR_CLASSES: "io.confluent.monitoring.clients.interceptor.MonitoringConsumerInterceptor"  # Consumer interceptors for monitoring
-      CONNECT_PRODUCER_INTERCEPTOR_CLASSES: "io.confluent.monitoring.clients.interceptor.MonitoringProducerInterceptor"  # Producer interceptors for monitoring
+      CONNECT_LOG4J_LOGGERS: "org.apache.kafka.connect.runtime.rest=WARN,org.reflections=ERROR" # Log levels
+      CONNECT_CONSUMER_INTERCEPTOR_CLASSES: "io.confluent.monitoring.clients.interceptor.MonitoringConsumerInterceptor" # Consumer interceptors for monitoring
+      CONNECT_PRODUCER_INTERCEPTOR_CLASSES: "io.confluent.monitoring.clients.interceptor.MonitoringProducerInterceptor" # Producer interceptors for monitoring
       # Any other environment variables needed for your setup
-    command: 
-      - bash 
-      - -c 
+    command:
+      - bash
+      - -c
       - |
         /usr/local/bin/init-kafka-connect.sh &
         /etc/confluent/docker/run
