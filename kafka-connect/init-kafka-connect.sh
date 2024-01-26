@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash 
 
 # A brief pause to ensure Kafka Connect is fully operational
 sleep 10

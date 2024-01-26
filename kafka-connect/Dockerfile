@@ -6,3 +6,5 @@ USER root
 RUN confluent-hub install --no-prompt confluentinc/kafka-connect-elasticsearch:10.0.1
 
 RUN confluent-hub install --no-prompt confluentinc/connect-transforms:latest
+
+WORKDIR /app
