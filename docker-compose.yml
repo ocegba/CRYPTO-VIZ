@@ -206,6 +206,12 @@ services:
       CONNECT_CONSUMER_INTERCEPTOR_CLASSES: "io.confluent.monitoring.clients.interceptor.MonitoringConsumerInterceptor" # Consumer interceptors for monitoring
       CONNECT_PRODUCER_INTERCEPTOR_CLASSES: "io.confluent.monitoring.clients.interceptor.MonitoringProducerInterceptor" # Producer interceptors for monitoring
       # Any other environment variables needed for your setup
+    command:
+      - bash
+      - -c
+      - |
+        ./init-kafka-connect.sh &
+        /etc/confluent/docker/run
     volumes:
       - ./kafka-connect:/app
 
