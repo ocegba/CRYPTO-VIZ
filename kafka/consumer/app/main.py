@@ -37,15 +37,15 @@ class Worker:
         return producer
 
     def send_producer_data(self, producer, data):
-        for record in data :
-            try:
-                future = producer.send(self.producer_topic, record)  # Envoyer chaque enregistrement comme message
-                result = future.get(timeout=60)  # Attendre jusqu'à 60 secondes pour une réponse
-                logging.info(f"Successfully sent message to {result.topic}:{result.partition}")
-            except KafkaError as e:
-                logging.error(f"Failed to send message: {e}")
-            except Exception as e :
-                logging.error(f"other error: {e}")
+        try:
+            logging.info(data)
+            future = producer.send(self.producer_topic, data)  # Send JSON as bytes
+            result = future.get(timeout=60)
+            logging.info(f"Successfully sent message to {result.topic}:{result.partition}")
+        except KafkaError as e:
+            logging.error(f"Failed to send message: {e}")
+        except Exception as e:
+            logging.error(f"other error: {e}")
 
     def run_tasks(self):
        try:
@@ -57,7 +57,10 @@ class Worker:
             parsed_df = processor.process_json_data(json_data, 18800000)
             parsed_df.show()
             data = parsed_df.collect()
-            self.send_producer_data(producer, data)
+            data_dicts = [row.asDict() for row in parsed_df.collect()]
+
+            # Now send this JSON data
+            self.send_producer_data(producer, data_dicts[0])
 
        except KafkaError as err:
              logging.info("error")
