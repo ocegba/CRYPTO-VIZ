@@ -47,6 +47,14 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
     depends_on:
       - zookeeper
+    deploy:
+      resources:
+        limits:
+          cpus: '0.50'
+          memory: 1G
+        reservations:
+          cpus: '0.25'
+          memory: 500M
 
   kafka2:
     image: "bitnami/kafka:latest"
@@ -64,6 +72,14 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
     depends_on:
       - zookeeper
+    deploy:
+      resources:
+        limits:
+          cpus: '0.50'
+          memory: 1G
+        reservations:
+          cpus: '0.25'
+          memory: 500M
 
   kafka3:
     image: "bitnami/kafka:latest"
@@ -81,6 +97,14 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
     depends_on:
       - zookeeper
+    deploy:
+      resources:
+        limits:
+          cpus: '0.50'
+          memory: 1G
+        reservations:
+          cpus: '0.25'
+          memory: 500M
 
   kafka4:
     image: "bitnami/kafka:latest"
@@ -98,6 +122,14 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
     depends_on:
       - zookeeper
+    deploy:
+      resources:
+        limits:
+          cpus: '0.50'
+          memory: 1G
+        reservations:
+          cpus: '0.25'
+          memory: 500M
 
   kafka5:
     image: "bitnami/kafka:latest"
@@ -115,6 +147,14 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
     depends_on:
       - zookeeper
+    deploy:
+      resources:
+        limits:
+          cpus: '0.50'
+          memory: 1G
+        reservations:
+          cpus: '0.25'
+          memory: 500M
 
   nifi:
     image: apache/nifi:latest
@@ -129,6 +169,14 @@ services:
       - SINGLE_USER_CREDENTIALS_USERNAME=${NIFI_USERNAME}
       - SINGLE_USER_CREDENTIALS_PASSWORD=${NIFI_PASSWORD}
       - NIFI_ZK_CONNECT_STRING="zookeeper:2181"
+    deploy:
+      resources:
+        limits:
+          cpus: '0.50'
+          memory: 1G
+        reservations:
+          cpus: '0.25'
+          memory: 500M
 
   kafka-producer:
     build:
@@ -148,6 +196,14 @@ services:
       - kafka4
       - kafka5
       - nifi
+    deploy:
+      resources:
+        limits:
+          cpus: '0.50'
+          memory: 1G
+        reservations:
+          cpus: '0.25'
+          memory: 500G
 
   kafka-consumer:
     build:
@@ -171,6 +227,14 @@ services:
       - kafka-producer
       - spark-master
       - spark-worker
+    deploy:
+      resources:
+        limits:
+          cpus: '0.50'
+          memory: 1G
+        reservations:
+          cpus: '0.25'
+          memory: 500M
 
   kafka-connect:
     build:
@@ -214,6 +278,14 @@ services:
         /etc/confluent/docker/run
     volumes:
       - ./kafka-connect:/app
+    deploy:
+      resources:
+        limits:
+          cpus: '0.50'
+          memory: 1G
+        reservations:
+          cpus: '0.25'
+          memory: 500M
 
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:8.12.0
@@ -247,10 +319,10 @@ services:
       resources:
         limits:
           cpus: '0.50'
-          memory: 5G
+          memory: 1G
         reservations:
           cpus: '0.25'
-          memory: 2.5G
+          memory: 500M
 
   kibana:
     container_name: kibana
