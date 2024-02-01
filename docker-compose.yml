@@ -54,7 +54,7 @@ services:
           memory: 1G
         reservations:
           cpus: '0.25'
-          memory: 500M
+          memory: 1G
 
   kafka2:
     image: "bitnami/kafka:latest"
@@ -79,7 +79,7 @@ services:
           memory: 1G
         reservations:
           cpus: '0.25'
-          memory: 500M
+          memory: 1G
 
   kafka3:
     image: "bitnami/kafka:latest"
@@ -104,7 +104,7 @@ services:
           memory: 1G
         reservations:
           cpus: '0.25'
-          memory: 500M
+          memory: 1G
 
   kafka4:
     image: "bitnami/kafka:latest"
@@ -129,7 +129,7 @@ services:
           memory: 1G
         reservations:
           cpus: '0.25'
-          memory: 500M
+          memory: 1G
 
   kafka5:
     image: "bitnami/kafka:latest"
@@ -154,7 +154,7 @@ services:
           memory: 1G
         reservations:
           cpus: '0.25'
-          memory: 500M
+          memory: 1G
 
   nifi:
     image: apache/nifi:latest
@@ -176,7 +176,7 @@ services:
           memory: 1G
         reservations:
           cpus: '0.25'
-          memory: 500M
+          memory: 1G
 
   kafka-producer:
     build:
@@ -203,7 +203,7 @@ services:
           memory: 1G
         reservations:
           cpus: '0.25'
-          memory: 500G
+          memory: 1G
 
   kafka-consumer:
     build:
@@ -234,7 +234,7 @@ services:
           memory: 1G
         reservations:
           cpus: '0.25'
-          memory: 500M
+          memory: 1G
 
   kafka-connect:
     build:
@@ -285,7 +285,7 @@ services:
           memory: 1G
         reservations:
           cpus: '0.25'
-          memory: 500M
+          memory: 1G
 
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:8.12.0
@@ -322,7 +322,7 @@ services:
           memory: 1G
         reservations:
           cpus: '0.25'
-          memory: 500M
+          memory: 1G
 
   kibana:
     container_name: kibana
