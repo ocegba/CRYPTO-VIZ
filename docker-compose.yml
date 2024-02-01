@@ -182,7 +182,7 @@ services:
       - kafka3
       - kafka4
       - kafka5
-      - elasticsearch
+      - elasticsearch 
     ports:
       - "8083:8083"
     networks:
@@ -243,6 +243,14 @@ services:
       - kafka5
     networks:
       - data_network
+    deploy:
+      resources:
+        limits:
+          cpus: '0.50'
+          memory: 5G
+        reservations:
+          cpus: '0.25'
+          memory: 2.5G
 
   kibana:
     container_name: kibana
