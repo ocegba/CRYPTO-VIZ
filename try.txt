@@ -1,51 +1,23 @@
-Name:             nifi-76487f84f8-42p2s
-Namespace:        default
-Priority:         0
-Service Account:  default
-Node:             <none>
-Labels:           app=nifi
-                  pod-template-hash=76487f84f8
-Annotations:      <none>
-Status:           Pending
-IP:               
-IPs:              <none>
-Controlled By:    ReplicaSet/nifi-76487f84f8
-Containers:
-  nifi:
-    Image:      apache/nifi:latest
-    Port:       8443/TCP
-    Host Port:  0/TCP
-    Environment:
-      SINGLE_USER_CREDENTIALS_USERNAME:  admin
-      SINGLE_USER_CREDENTIALS_PASSWORD:  ctsBtRBKHRAx69EqUghvvgEvjnaLjFEB
-    Mounts:
-      /opt/nifi/logs from nifi-logs (rw)
-      /opt/nifi/nifi-current/data from nifi-data (rw)
-      /var/run/secrets/kubernetes.io/serviceaccount from kube-api-access-vjjtt (ro)
-Conditions:
-  Type           Status
-  PodScheduled   False 
-Volumes:
-  nifi-data:
-    Type:       PersistentVolumeClaim (a reference to a PersistentVolumeClaim in the same namespace)
-    ClaimName:  nifi-data-pvc
-    ReadOnly:   false
-  nifi-logs:
-    Type:       PersistentVolumeClaim (a reference to a PersistentVolumeClaim in the same namespace)
-    ClaimName:  nifi-logs-pvc
-    ReadOnly:   false
-  kube-api-access-vjjtt:
-    Type:                    Projected (a volume that contains injected data from multiple sources)
-    TokenExpirationSeconds:  3607
-    ConfigMapName:           kube-root-ca.crt
-    ConfigMapOptional:       <nil>
-    DownwardAPI:             true
-QoS Class:                   BestEffort
-Node-Selectors:              <none>
-Tolerations:                 node.kubernetes.io/not-ready:NoExecute op=Exists for 300s
-                             node.kubernetes.io/unreachable:NoExecute op=Exists for 300s
-Events:
-  Type     Reason            Age                From               Message
-  ----     ------            ----               ----               -------
-  Warning  FailedScheduling  40m                default-scheduler  0/1 nodes are available: persistentvolumeclaim "nifi-data-pvc" not found. preemption: 0/1 nodes are available: 1 Preemption is not helpful for scheduling..
-  Warning  FailedScheduling  15m (x5 over 35m)  default-scheduler  0/1 nodes are available: persistentvolumeclaim "nifi-data-pvc" not found. preemption: 0/1 nodes are available: 1 Preemption is not helpful for scheduling..
+NAME                        READY   STATUS              RESTARTS   AGE
+pod/elasticsearch-0         0/1     ContainerCreating   0          2m7s
+pod/kafka-0                 0/1     Error               0          106s
+pod/nifi-76487f84f8-v9jsw   0/1     ContainerCreating   0          114s
+pod/zookeeper-0             0/1     ImagePullBackOff    0          2m2s
+
+NAME                    TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)          AGE
+service/elasticsearch   ClusterIP   None             <none>        9200/TCP         2m7s
+service/kafka           ClusterIP   10.107.18.106    <none>        9092/TCP         106s
+service/kubernetes      ClusterIP   10.96.0.1        <none>        443/TCP          2m26s
+service/nifi            NodePort    10.100.242.222   <none>        8443:30443/TCP   114s
+service/zookeeper       ClusterIP   10.98.144.66     <none>        2181/TCP         2m2s
+
+NAME                   READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/nifi   0/1     1            0           114s
+
+NAME                              DESIRED   CURRENT   READY   AGE
+replicaset.apps/nifi-76487f84f8   1         1         0       114s
+
+NAME                             READY   AGE
+statefulset.apps/elasticsearch   0/1     2m7s
+statefulset.apps/kafka           0/1     106s
+statefulset.apps/zookeeper       0/1     2m2s
