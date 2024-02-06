@@ -29,6 +29,8 @@ services:
     environment:
       - SPARK_MODE=worker
       - SPARK_MASTER_URL=spark://spark-master:7077
+    restart: always
+
 
   kafka1:
     image: "bitnami/kafka:latest"
@@ -55,6 +57,7 @@ services:
         reservations:
           cpus: '0.25'
           memory: 1G
+    restart: always
 
   kafka2:
     image: "bitnami/kafka:latest"
@@ -80,6 +83,8 @@ services:
         reservations:
           cpus: '0.25'
           memory: 1G
+    restart: always
+
 
   kafka3:
     image: "bitnami/kafka:latest"
@@ -105,56 +110,8 @@ services:
         reservations:
           cpus: '0.25'
           memory: 1G
+    restart: always
 
-  # kafka4:
-    # image: "bitnami/kafka:latest"
-    # container_name: kafka4
-    # networks:
-    #   - data_network
-    # ports:
-    #   - "9095:9092"
-    # environment:
-    #   - KAFKA_BROKER_ID=4
-    #   - "KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://kafka4:9092"
-    #   - "KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181"
-    #   - ALLOW_PLAINTEXT_LISTENER=yes
-    # volumes:
-    #   - /var/run/docker.sock:/var/run/docker.sock
-    # depends_on:
-    #   - zookeeper
-    # deploy:
-    #   resources:
-    #     limits:
-    #       cpus: '0.50'
-    #       memory: 1G
-    #     reservations:
-    #       cpus: '0.25'
-    #       memory: 1G
-
-  # kafka5:
-  #   image: "bitnami/kafka:latest"
-  #   container_name: kafka5
-  #   networks:
-  #     - data_network
-  #   ports:
-  #     - "9096:9092"
-  #   environment:
-  #     - KAFKA_BROKER_ID=5
-  #     - "KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://kafka5:9092"
-  #     - "KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181"
-  #     - ALLOW_PLAINTEXT_LISTENER=yes
-  #   volumes:
-  #     - /var/run/docker.sock:/var/run/docker.sock
-  #   depends_on:
-  #     - zookeeper
-  #   deploy:
-  #     resources:
-  #       limits:
-  #         cpus: '0.50'
-  #         memory: 1G
-  #       reservations:
-  #         cpus: '0.25'
-  #         memory: 1G
 
   nifi:
     image: apache/nifi:latest
@@ -173,10 +130,12 @@ services:
       resources:
         limits:
           cpus: '0.50'
-          memory: 1G
+          memory: 2G
         reservations:
           cpus: '0.25'
           memory: 1G
+    restart: always
+
 
   kafka-producer:
     build:
@@ -193,17 +152,16 @@ services:
       - kafka1
       - kafka2
       - kafka3
-      # - kafka4
-      # - kafka5
       - nifi
     deploy:
       resources:
         limits:
           cpus: '0.50'
-          memory: 1.5G
+          memory: 2G
         reservations:
           cpus: '0.25'
           memory: 1G
+    restart: always
 
   kafka-consumer:
     build:
@@ -233,6 +191,7 @@ services:
         reservations:
           cpus: '0.25'
           memory: 5G
+    restart: always
 
   kafka-connect:
     build:
@@ -259,19 +218,12 @@ services:
       CONNECT_VALUE_CONVERTER: org.apache.kafka.connect.json.JsonConverter
       CONNECT_KEY_CONVERTER_SCHEMAS_ENABLE: "false"
       CONNECT_VALUE_CONVERTER_SCHEMAS_ENABLE: "false"
-      # Elasticsearch Sink Connector specific settings
       CONNECTOR_NAME: "elasticsearch-sink"
       ES_HOST: "elasticsearch:9200"
       CONNECT_LOG4J_LOGGERS: "org.apache.kafka.connect.runtime.rest=WARN,org.reflections=ERROR" # Log levels
       CONNECT_CONSUMER_INTERCEPTOR_CLASSES: "io.confluent.monitoring.clients.interceptor.MonitoringConsumerInterceptor" # Consumer interceptors for monitoring
       CONNECT_PRODUCER_INTERCEPTOR_CLASSES: "io.confluent.monitoring.clients.interceptor.MonitoringProducerInterceptor" # Producer interceptors for monitoring
       # Any other environment variables needed for your setup
-    command:
-      - bash
-      - -c
-      - |
-        ./init-kafka-connect.sh &
-        /etc/confluent/docker/run
     volumes:
       - ./kafka-connect:/app
     deploy:
@@ -282,6 +234,8 @@ services:
         reservations:
           cpus: '0.25'
           memory: 1G
+    restart: always
+
 
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:8.12.0
@@ -317,6 +271,8 @@ services:
         reservations:
           cpus: '0.25'
           memory: 1G
+    restart: always
+
 
   kibana:
     container_name: kibana
@@ -329,6 +285,8 @@ services:
       - elasticsearch
     networks:
       - data_network
+    restart: always
+
 
 networks:
   data_network:

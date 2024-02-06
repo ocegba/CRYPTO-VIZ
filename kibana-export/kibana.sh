@@ -7,6 +7,10 @@ INDEX=".kibana"
 DASHBOARD_FILE="./export.ndjson"
 
 # Import the dashboard
-curl -X POST "$KIBANA_URL/api/saved_objects/_import" \
+curl curl --connect-timeout 5 \
+    --max-time 10 \
+    --retry 5 \
+    --retry-delay 0 \
+    --retry-max-time 40 -X POST "$KIBANA_URL/api/saved_objects/_import" \
   -H "kbn-xsrf: true" \
   --form file=@$DASHBOARD_FILE
