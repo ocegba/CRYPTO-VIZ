@@ -53,8 +53,8 @@ start_components() {
   echo "Components started."
 }
 
-get_token
 wait_for_nifi
+get_token
 get_template_id
 instantiate_template
 start_components
