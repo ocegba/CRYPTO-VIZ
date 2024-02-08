@@ -548,7 +548,7 @@
                 <properties>
                     <entry>
                         <key>bootstrap.servers</key>
-                        <value>kafka1:9092,kafka2:9092,kafka3:9092,kafka4:9092,kafka5:9092,kafka6:9092</value>
+                        <value>kafka1:9092,kafka2:9092,kafka3:9092</value>
                     </entry>
                     <entry>
                         <key>security.protocol</key>
@@ -937,7 +937,7 @@
                 <properties>
                     <entry>
                         <key>bootstrap.servers</key>
-                        <value>kafka1:9092,kafka2:9092,kafka3:9092,kafka4:9092,kafka5:9092,kafka6:9092</value>
+                        <value>kafka1:9092,kafka2:9092,kafka3:9092</value>
                     </entry>
                     <entry>
                         <key>security.protocol</key>
